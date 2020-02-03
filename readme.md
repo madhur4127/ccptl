@@ -14,11 +14,11 @@ Desired version of C++ standard can be enabled by passing `-std=c++14` to most o
 ## Directory
 ### Data Structures
 ### Number Theory
-Wheel Factorization
-
-GCD (Greatest Common Divisor) -- Iterative
-
-Combinations (nCr)
+#### Fundamentals
+- [Wheel Factorization](https://github.com/CodeISM/ccptl/blob/master/Number%20Theory/wheel_factorization.h): 25% faster than sqrt(n) trial division
+- [GCD (Greatest Common Divisor) -- Iterative](https://github.com/CodeISM/ccptl/blob/master/Number%20Theory/gcd.h)
+#### Combinatorics
+- Combinations (nCr)
 ### Dynamic Programming
 ### String Algorithms
 
