@@ -7,6 +7,7 @@
  * Output: A C++ vector containing the prime factors in sorted order.
  * Example: If n = 2^2 * 5^1 * 3^2, then wheel_factor(n)
  *          returns vector<int>{2,2,3,3,5}
+ * Status: Tested
  */
 inline vector<long long> wheel_factor(long long n) {
     using ll = long long;
