@@ -39,7 +39,7 @@ class BIT {
 			_bit[pos] = func(_bit[pos], dif);
 	}
 
-	T query(int pos) { // pos is 0-indexed, prefix operation of values [0...pos]
+	T query(int pos) const { // pos is 0-indexed, prefix operation of values [0...pos]
 		// assert(pos>=0 && pos<_bit.size() && "ERROR: Invalid position");
 		T res = _bit[++pos];
 		for (pos -= pos & -pos; pos; pos -= pos & -pos)
@@ -49,5 +49,5 @@ class BIT {
 
   private:
 	vector<T> _bit; // FT using 1-based indexing
-	op func = op();
+	const op func = op();
 };
