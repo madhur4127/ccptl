@@ -26,9 +26,9 @@ class BIT {
 	BIT(const vector<T> &list) : _bit(1) {
 		_bit.insert(_bit.end(), list.begin(), list.end());
 		int size = _bit.size();
-		for (int i = 1; i <= size; ++i) {
+		for (int i = 1; i < size; ++i) {
 			int idx = i + (i & -i);
-			if (idx <= size)
+			if (idx < size)
 				_bit[idx] = func(_bit[idx], _bit[i]);
 		}
 	}
