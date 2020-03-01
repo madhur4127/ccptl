@@ -10,8 +10,8 @@
  *  ts.solve(); // Returns pair<return status, solution> where return status is true if the constraints are satisfiable.
  * Time: O(N+E), where N is the number of boolean variables, and E is the number of clauses.
  */
-#include <bits/stdc++.h>
 
+#include <vector>
 struct TwoSat {
     TwoSat(int n = 0) : N(n), gr(2 * n), fixed(2 * n) {}
 
