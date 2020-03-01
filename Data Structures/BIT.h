@@ -3,17 +3,17 @@
  * Common Names: Fenwick Tree, Binary Indexed Tree
  * Use : Data structures which does prefix/range operation in O(log N) (small constant) with point updates.
  * Time Complexity : O(N) to build
- *					 O(logN) to query a range
- *					 O(logN) to update a point
+ *                   O(logN) to query a range
+ *                   O(logN) to update a point
  * Space Complexity: O(N)
  * Usage Notes: 1. Template arguments: <element type "T",	// ex - int, long long
- *									    operation "op">		// ex - std::plus (for prefix sum) (DEFAULT)
- *				2. BIT uses 0-based indexing for update and query
- *				3. Examples:
- *							BIT<long long> b(1e5, 67); // creates a bit with 10^5 elements initialized to 67
- *													   // defaults to 0
- *							BIT<long long> b(v);   // creates a bit on vector<long long> v
- *							b.query(10);		   // return op(b[0], b[1], b[2], ... , b[10])
+ *                                      operation "op">		// ex - std::plus (for prefix sum) (DEFAULT)
+ *              2. BIT uses 0-based indexing for update and query
+ *              3. Examples:
+ *                          BIT<long long> b(1e5, 67); // creates a bit with 10^5 elements initialized to 67
+ *                                                     // defaults to 0
+ *                          BIT<long long> b(v);   // creates a bit on vector<long long> v
+ *                          b.query(10);   // return op(b[0], b[1], b[2], ... , b[10])
  */
 
 template <typename T = int, class op = std::plus<T>>
