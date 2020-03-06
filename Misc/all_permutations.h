@@ -21,19 +21,19 @@ void all_permutations(T arr) {
     // output(arr)
 
     for (int i = 0; i < n;) {
-		if (c[i] < i) {
-			if (i & 1)
-				swap(arr[c[i]], arr[i]);
-			else
-				swap(arr[0], arr[i]);
+        if (c[i] < i) {
+            if (i & 1)
+                swap(arr[c[i]], arr[i]);
+            else
+                swap(arr[0], arr[i]);
 
             // next permutation is in arr
             // output (arr)
 
             c[i] += 1;
-			i = 0;
-		} else {
-			c[i++] = 0;
-		}
-	}
+            i = 0;
+        } else {
+            c[i++] = 0;
+        }
+    }
 }
