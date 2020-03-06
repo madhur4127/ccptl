@@ -19,35 +19,35 @@
 template <typename T = int, class op = std::plus<T>>
 class BIT {
   public:
-	// constructs a BIT with specified size
-	BIT(unsigned size, T val = 0) : _bit(size + 1, val) {}
+    // constructs a BIT with specified size
+    BIT(unsigned size, T val = 0) : _bit(size + 1, val) {}
 
-	// constructs a BIT with specified elements
-	BIT(const vector<T> &list) : _bit(1) {
-		_bit.insert(_bit.end(), list.begin(), list.end());
-		int size = _bit.size();
-		for (int i = 1; i < size; ++i) {
-			int idx = i + (i & -i);
-			if (idx < size)
-				_bit[idx] = func(_bit[idx], _bit[i]);
-		}
-	}
+    // constructs a BIT with specified elements
+    BIT(const vector<T> &list) : _bit(1) {
+        _bit.insert(_bit.end(), list.begin(), list.end());
+        int size = _bit.size();
+        for (int i = 1; i < size; ++i) {
+            int idx = i + (i & -i);
+            if (idx < size)
+                _bit[idx] = func(_bit[idx], _bit[i]);
+        }
+    }
 
-	void update(int pos, T dif) { // pos is 0-based indexed
-		// assert(pos>=0 && pos<_bit.size() && "ERROR: Invalid position");
-		for (++pos; pos < (int)_bit.size(); pos += pos & -pos)
-			_bit[pos] = func(_bit[pos], dif);
-	}
+    void update(int pos, T dif) { // pos is 0-based indexed
+        // assert(pos>=0 && pos<_bit.size() && "ERROR: Invalid position");
+        for (++pos; pos < (int)_bit.size(); pos += pos & -pos)
+            _bit[pos] = func(_bit[pos], dif);
+    }
 
-	T query(int pos) const { // pos is 0-indexed, prefix operation of values [0...pos]
-		// assert(pos>=0 && pos<_bit.size() && "ERROR: Invalid position");
-		T res = _bit[++pos];
-		for (pos -= pos & -pos; pos; pos -= pos & -pos)
-			res = func(res, _bit[pos]);
-		return res;
-	}
+    T query(int pos) const { // pos is 0-indexed, prefix operation of values [0...pos]
+        // assert(pos>=0 && pos<_bit.size() && "ERROR: Invalid position");
+        T res = _bit[++pos];
+        for (pos -= pos & -pos; pos; pos -= pos & -pos)
+            res = func(res, _bit[pos]);
+        return res;
+    }
 
   private:
-	vector<T> _bit; // FT using 1-based indexing
-	const op func = op();
+    vector<T> _bit; // FT using 1-based indexing
+    const op func = op();
 };

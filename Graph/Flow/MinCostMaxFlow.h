@@ -9,7 +9,7 @@
  *              If there are no negative edges then first call to bellman ford can be replaced by dijkstra.
  *              Dijkstra can be replaced by spfa but it did not improve runtime for me. 
  */
-template<typename flow_t, typename cost_t>
+template <typename flow_t, typename cost_t>
 struct MinCostMaxFlow {
     static const flow_t FLOW_INF = numeric_limits<flow_t>::max() / 2;
     const cost_t COST_INF = numeric_limits<cost_t>::max() / 2;
@@ -20,12 +20,12 @@ struct MinCostMaxFlow {
         cost_t cost;
 
         edge(int _node = -1, int _rev = -1, flow_t _capacity = 0, cost_t _cost = 0)
-                : node(_node), rev(_rev), capacity(_capacity), cost(_cost), flow(0) {}
+            : node(_node), rev(_rev), capacity(_capacity), cost(_cost), flow(0) {}
     };
 
     int V = -1;
-    vector <vector<edge>> adj;
-    vector <cost_t> dist;
+    vector<vector<edge>> adj;
+    vector<cost_t> dist;
     vector<int> prev;
     vector<edge *> prev_edge;
 
@@ -109,7 +109,7 @@ struct MinCostMaxFlow {
         prev.assign(V, -1);
         prev_edge.assign(V, nullptr);
 
-        priority_queue <dijkstra_state> pq;
+        priority_queue<dijkstra_state> pq;
         dijkstra_check(source, 0, -1, nullptr, pq);
 
         while (!pq.empty()) {
@@ -133,7 +133,7 @@ struct MinCostMaxFlow {
                 e.cost += dist[i] - dist[e.node];
     }
 
-    pair <flow_t, cost_t> minCostFlow(int source, int sink, flow_t flow_goal = FLOW_INF) {
+    pair<flow_t, cost_t> minCostFlow(int source, int sink, flow_t flow_goal = FLOW_INF) {
         assert(V >= 0);
 
         if (!bellman_ford(source, sink))
