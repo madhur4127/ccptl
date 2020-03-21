@@ -13,7 +13,6 @@
 template <int MOD = 1'000'000'007>
 struct Modular {
     int value;
-    static const int MOD_value = MOD;
 
     Modular(long long v = 0) {
         value = v % MOD;
@@ -47,15 +46,24 @@ struct Modular {
         }
         return res;
     }
-    friend Modular inverse(Modular a) { return mexp(a, MOD - 2); }
+    friend Modular inverse(Modular a) {
+        int phi = MOD - 1; // change this for general MOD where a^phi = 1 (mod MOD)
+        return mexp(a, phi - 1);
+    }
 
     Modular &operator/=(Modular const &b) { return *this *= inverse(b); }
-    friend Modular operator+(Modular a, Modular const b) { return a += b; }
-    friend Modular operator-(Modular a, Modular const b) { return a -= b; }
-    friend Modular operator-(Modular const a) { return 0 - a; }
-    friend Modular operator*(Modular a, Modular const b) { return a *= b; }
-    friend Modular operator/(Modular a, Modular const b) { return a /= b; }
-    friend std::ostream &operator<<(std::ostream &os, Modular const &a) { return os << a.value; }
+    friend Modular operator+(Modular a, const Modular b) { return a += b; }
+    friend Modular operator-(Modular a, const Modular b) { return a -= b; }
+    friend Modular operator-(const Modular a) { return 0 - a; }
+    friend Modular operator*(Modular a, const Modular b) { return a *= b; }
+    friend Modular operator/(Modular a, const Modular b) { return a /= b; }
+    friend std::ostream &operator<<(std::ostream &os, const Modular &a) { return os << a.value; }
+    friend std::istream &operator>>(std::istream &is, Modular &a) {
+        long long temp;
+        is >> temp;
+        a = Modular(temp);
+        return is;
+    }
     friend bool operator==(Modular const &a, Modular const &b) { return a.value == b.value; }
     friend bool operator!=(Modular const &a, Modular const &b) { return a.value != b.value; }
 };

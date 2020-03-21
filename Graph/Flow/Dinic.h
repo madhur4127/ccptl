@@ -19,8 +19,8 @@ struct Dinic {
     };
 
     const long long flow_inf = 1e18;
-    vector <FlowEdge> edges;
-    vector <vector<int>> adj;
+    vector<FlowEdge> edges;
+    vector<vector<int>> adj;
     int n, m = 0;
     int s, t;
     vector<int> level, ptr;
@@ -61,7 +61,7 @@ struct Dinic {
             return 0;
         if (v == t)
             return pushed;
-        for (int &cid = ptr[v]; cid < (int) adj[v].size(); cid++) {
+        for (int &cid = ptr[v]; cid < (int)adj[v].size(); cid++) {
             int id = adj[v][cid];
             int u = edges[id].u;
             if (level[v] + 1 != level[u] || edges[id].cap - edges[id].flow < 1)
