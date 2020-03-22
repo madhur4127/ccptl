@@ -59,7 +59,8 @@ struct matrix : public matrix_base<T> {
 
     matrix(int r, int c, T init = 0) : base_type(r, c, init) {}
 
-    matrix const operator*(const matrix &o) const {
+    matrix const __attribute__((hot))
+    operator*(const matrix &o) const {
         base_type tp = o.transpose();
         int x = this->rows, y = this->columns, z = o.rows;
         matrix ret(x, z);
@@ -83,7 +84,8 @@ struct matrix<Modular<MOD>> : matrix_base<Modular<MOD>> {
 
     matrix(int r, int c, Modular<MOD> init = 0) : base_type(r, c, init) {}
 
-    matrix constexpr operator*(const matrix &o) const {
+    matrix constexpr __attribute__((hot))
+    operator*(const matrix &o) const {
         // Don't change this if you don't know how this works
         base_type tp = o.transpose();
         int x = this->rows, y = this->columns, z = o.rows;
@@ -96,7 +98,7 @@ struct matrix<Modular<MOD>> : matrix_base<Modular<MOD>> {
                 for (int k = 0; k < y; ++k) {
                     auto cur = s;
                     s += static_cast<uint64_t>((*this)[i][k].value) * static_cast<uint64_t>(tp[j][k].value);
-                    carry += cur > s;
+                    carry += s < cur;
                 }
                 ret[i][j] = ((s % MOD) + base * carry) % MOD;
             }
