@@ -5,6 +5,7 @@
  * Time Complexity: O(N^3) cache-efficient matrix multiplication
  * Notes: 1. Use Modular class from modular.h to take advantage of optimized modular arithmetic
  *        2. There are helper member functions like transpose, mexp (modular exponentiation)
+ * Status: Tested: Modular exponentiation, Rest of the operations are pending
  */
 
 template <typename T>
