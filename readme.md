@@ -18,12 +18,15 @@ Desired version of C++ standard can be enabled by passing `-std=c++14` to most o
 
 ### Graph
 - [2-SAT](https://github.com/CodeISM/ccptl/blob/master/Graph/2SAT.h): solves 2-SAT problem in O(#boolean variables + #clauses) with CNF based formulation.
-### Number Theory
-#### Fundamentals
+### Math
+#### Number Theory
 - [Wheel Factorization](https://github.com/CodeISM/ccptl/blob/master/Number%20Theory/wheel_factorization.h): 25% faster than sqrt(n) trial division
 - [GCD (Greatest Common Divisor)](https://github.com/CodeISM/ccptl/blob/master/Number%20Theory/gcd.h): Iterative/Compile time constant
 #### Combinatorics
 - Combinations (nCr)
+#### Linear Algebra
+- [Matrix](https://github.com/CodeISM/ccptl/blob/master/Linear%20Algebra/matrix.h): highly optimized: multiplication, exponentiation, transpose including versions with modular arithmetic.
+
 ### Dynamic Programming
 ### String Algorithms
 
