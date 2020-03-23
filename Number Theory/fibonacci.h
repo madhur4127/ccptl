@@ -11,7 +11,7 @@ T fibonacci(const U& n){
     if(n<=3) return (n+1)>>1;
     T a = 1, b = 1;
     U mask = U(1)<<(numeric_limits<U>::digits - 1);
-    if(is_unsigned<U>::value) mask>>=1+__builtin_clzll(n);
+    if(is_unsigned<U>::value) mask>>=__builtin_clzll(n);
     else for(; !(n & mask); mask >>= 1) ;
     for(mask>>=1; mask; mask>>=1){
         tie(a,b) = make_tuple(a*(2*b-a), b*b+a*a);
