@@ -23,7 +23,7 @@ Desired version of C++ standard can be enabled by passing `-std=c++14` to most o
 #### Number Theory
 - [Wheel Factorization](https://github.com/CodeISM/ccptl/blob/master/Number%20Theory/wheel_factorization.h): 25% faster than sqrt(n) trial division
 - [GCD (Greatest Common Divisor)](https://github.com/CodeISM/ccptl/blob/master/Number%20Theory/gcd.h): Iterative/Compile time constant
-- [Extended Euclid](https://github.com/CodeISM/ccptl/blob/master/Number%20Theory/extended_euclid.h): iterative version, 2x fast than recursive.
+- [Extended Euclid](https://github.com/CodeISM/ccptl/blob/master/Number%20Theory/extended_euclid.h): iterative version, much faster than recursive.
 - [Modular Exponentiation](https://github.com/CodeISM/ccptl/blob/master/Number%20Theory/modular_exponentiation.h): constexpr version.
 #### Combinatorics
 - Combinations (nCr)
