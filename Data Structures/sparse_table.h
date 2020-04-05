@@ -1,52 +1,62 @@
 /*
 * Author: Madhur Chauhan
-* Use: Static DS which requires O(N logN) preprocessing further which queries
+* Use: Static DS which requires O(N logN) preprocessing after which queries
 *      can be answered very fast - O(1) for some functions.
 * Time Complexity: 
 *       O(NlogN) to build
 *       O(1) or O(logN) for query (depends on function)
 * Space Complexity: O(NlogN)
+* Notes: 1. An example operation class is shown (compare_min), replace "min" with your desired operation.
+*           Create a different class for each operation or use STLs function objects: plus<int>, less<int>, etc.
+*        2. query_fast is O(1) and is useful when queries can be answered by two *overlapping* ranges.
+*           Examples: min, max, gcd and NOT sum.
+*        3. query_slow is O(logN) and is useful for rest of the functions like sum.
 * Usage:
-*       SparseTable<int> st(vec);  // constructs sparse table from vec (vector<int>)
-*       st.query(left, right);     // Query range: [left,right] in O(logN)
-*       st.query_fast(left, right);// Query range: [left,right] in O(1)
+*       SparseTable<int, compare_min> st(vec);  // constructs sparse table from vec (vector<int>)
+*       st.query(left, right);       // Query range: [left,right] in O(logN)
+*       st.query_fast(left, right);  // Query range: [left,right] in O(1)
+* Status: Tested
 */
 
-template <class T = int>
-struct SparseTable {
-    vector<vector<T>> st;
-    int K = 1; // K = ceil(log(N))
-
-    SparseTable(const vector<T> &V) {
-        int N = V.size();
+template <typename T>
+struct compare_min {
+    const T constexpr operator()(const T &a, const T &b) const {
+        return min(a, b);
+    }
+};
+template <typename T, class F = plus<T>>
+class sparse_table {
+  public:
+    sparse_table(const vector<T> &v) {
+        int N = v.size();
         for (int s = 1; s < N; s <<= 1)
             K++;
-        st.assign(K, V);
+        st.assign(K, vector<T>(N));
+        copy(begin(v), end(v), begin(st[0]));
         for (int j = 1; j <= K; ++j)
             for (int i = 0; i + (1 << j) <= N; ++i)
-                // using f(X,Y) = min(X, Y)
-                st[j][i] = min(st[j - 1][i], st[j - 1][i + (1 << (j - 1))]); // CHANGE THIS FUNCTION (from min to other)
+                st[j][i] = _op(st[j - 1][i], st[j - 1][i + (1 << (j - 1))]);
     }
 
-    // O(1)/query: functions where duplicates does not matter
-    //             f(a[x-1], a[x], a[x], a[x], a[x+1]) = f(a[x-1], a[x], a[x+1])
-    // Examples: min, max, gcd and NOT: sum (duplicates matter)
-    T query_fast(int l, int r) {
-        assert(l <= r);
-        int dep = 31 - __builtin_clz(r - l + 1);             // GCC specific
-        return min(st[dep][l], st[dep][r - (1 << dep) + 1]); // CHANGE THIS FUNCTION (from min to other)
+    T query_fast(int l, int r) { // 0-based interval: [l,r]
+        int dep = 31 - __builtin_clz(r - l + 1);
+        return _op(st[dep][l], st[dep][r - (1 << dep) + 1]);
     }
 
     // O(log N)/query
-    T query(int l, int r) {
-        assert(l <= r);
-        long long ans = 1e17; // CHANGE: WHAT TO RETURN ON EMPTY INTERVAL
+    T query(int l, int r) { // 0-based interval: [l,r]
+        T ans = st[0][l++];
         for (int j = K; j >= 0; j--) {
             if ((1 << j) <= r - l + 1) {
-                ans = min(ans, st[j][l]); // CHANGE THIS FUNCTION (from min to other)
+                ans = op(ans, st[j][l]);
                 l += 1 << j;
             }
         }
         return ans;
     }
+
+  private:
+    vector<vector<T>> st;
+    int K = 1; // K = ceil(log(N))
+    const F _op = F();
 };
