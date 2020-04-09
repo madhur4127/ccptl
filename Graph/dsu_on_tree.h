@@ -54,7 +54,7 @@ function<void(int, int)> dsu_on_tree = [&](int u, int par) {
 
     // Answer queries here for subtree (previously) of u, cnt[c]: #vertices with color c
     for (auto &[req, idx] : queries) { // C++17 feature: Structured binding declaration
-        ans[idx] = cnt[req]; // #vertices with color 'req' in subtree of u
+        ans[idx] = cnt[req];           // #vertices with color 'req' in subtree of u
     }
 };
 dsu_on_tree(root, -1);
