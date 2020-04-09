@@ -25,7 +25,7 @@ function<int(int, int)> preprocess = [&](int u, int par) {
 
 preprocess(root, -1);
 
-vv<int> cnt(number_of_colors, 0); // cnt[i]: number of vertices of i'th color
+vector<int> cnt(number_of_colors, 0); // cnt[i]: number of vertices of i'th color
 function<void(int, int)> dsu_on_tree = [&](int u, int par) {
     int big_ch = -1, mx = -1;
     for (auto v : adj[u])
