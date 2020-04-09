@@ -1,11 +1,18 @@
-constexpr inline long long gcd(long long a, long long b) {
-    if (a < 0) a = -a;
-    if (b < 0) b = -b;
-    while (a > 0 && b > 0) {
-        if (a > b)
-            a %= b;
-        else
-            b %= a;
-    }
-    return a + b;
+template<typename T>
+constexpr T gcd(T u, T v) {
+   // boundary cases
+   if (!u || !v)
+	  return u | v;
+#if __cpp_lib_gcd_lcm >= 201606L
+   return std::gcd(u, v);
+#endif
+   unsigned shift = __builtin_ctz(u | v);
+   u >>= __builtin_ctz(u);
+   do
+   {
+	  v >>= __builtin_ctz(v);
+	  if (u > v) swap(u, v);
+	  v -= u;
+   } while (v);
+   return u << shift;
 }
