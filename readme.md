@@ -16,6 +16,7 @@ Desired version of C++ standard can be enabled by passing `-std=c++14` to most o
 - [Binary Indexed Tree (BIT) / Fenwick Tree](https://github.com/CodeISM/ccptl/blob/master/Data%20Structures/BIT.h): Supports prefix queries and point update in O(log N) after taking O(N) time to build with O(N) space.
 - [Min Deque](https://github.com/CodeISM/ccptl/blob/master/Data%20Structures/min_deque.h): Finding minimum element out of current element in the deque. Overhead of one integer per element, but is quite space efficient in practice.
 - [Ordered set](https://github.com/CodeISM/ccptl/blob/master/Data%20Structures/ordered_set.h): Dyanmic Order statistics in O(log N). Uses GNU's policy based data structure (pbds).
+- [Sparse Table](https://github.com/CodeISM/ccptl/blob/master/Data%20Structures/sparse_table.h): Static data structure that can answer queries in O(1) after O(NlogN) preprocessing (for some functions).
 
 ### Graph
 - [2-SAT](https://github.com/CodeISM/ccptl/blob/master/Graph/2SAT.h): solves 2-SAT problem in O(#boolean variables + #clauses) with CNF based formulation.
@@ -32,10 +33,16 @@ Desired version of C++ standard can be enabled by passing `-std=c++14` to most o
 
 ### Dynamic Programming
 ### String Algorithms
-
+### Misc
+- [Ska Sort](https://github.com/CodeISM/ccptl/blob/master/Misc/ska_sort.h): A much faster (2x w.r.t. std::sort) sorting algorithm.
+- [All Permutations](https://github.com/CodeISM/ccptl/blob/master/Misc/all_permutations.h): Generate all permutations of a sequence (iterative) in some order (not lexicographic).
 
 ## Contribution
 Feel free to open an issue or fire a pull request!
+
+## TODO
+- Update this readme with new (updated) content
+- Test the implementation for bugs
 
 ## License
 
