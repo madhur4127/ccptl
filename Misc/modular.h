@@ -41,8 +41,7 @@ struct Modular {
         Modular res = 1;
         while (e) {
             if (e & 1) res *= a;
-            a *= a;
-            e >>= 1;
+            a *= a, e >>= 1;
         }
         return res;
     }

@@ -1,8 +1,7 @@
 /*
- *
- * Details: https://probablydance.com/2016/12/27/i-wrote-a-faster-sorting-algorithm/
- * Link:    https://github.com/skarupke/ska_sort/blob/master/ska_sort.hpp
- *
+ * Instruction on how-to-use (see section: SOURCE CODE AND USAGE): 
+ *         https://probablydance.com/2016/12/27/i-wrote-a-faster-sorting-algorithm/
+ * Source: https://github.com/skarupke/ska_sort/blob/master/ska_sort.hpp
  */
 
 //          Copyright Malte Skarupke 2016.
