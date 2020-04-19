@@ -13,19 +13,22 @@ Desired version of C++ standard can be enabled by passing `-std=c++14` to most o
 
 ## Directory
 ### Data Structures
-- [Binary Indexed Tree (BIT) / Fenwick Tree](https://github.com/CodeISM/ccptl/blob/master/Data%20Structures/BIT.h): Supports prefix queries and point update in O(log N) after taking O(N) time to build with O(N) space.
+- [BIT/Fenwick Tree](https://github.com/CodeISM/ccptl/blob/master/Data%20Structures/BIT.h): Supports prefix queries and point update in O(log N) after taking O(N) time to build with O(N) space.
 - [Min Deque](https://github.com/CodeISM/ccptl/blob/master/Data%20Structures/min_deque.h): Finding minimum element out of current element in the deque. Overhead of one integer per element, but is quite space efficient in practice.
 - [Ordered set](https://github.com/CodeISM/ccptl/blob/master/Data%20Structures/ordered_set.h): Dyanmic Order statistics in O(log N). Uses GNU's policy based data structure (pbds).
 - [Sparse Table](https://github.com/CodeISM/ccptl/blob/master/Data%20Structures/sparse_table.h): Static data structure that can answer queries in O(1) after O(NlogN) preprocessing (for some functions).
+- [DSU/Union-Find](https://github.com/CodeISM/ccptl/blob/master/Data%20Structures/DSU.h): Works in O(alpha(N)) and uses union by size heuristics. 
 
 ### Graph
 - [2-SAT](https://github.com/CodeISM/ccptl/blob/master/Graph/2SAT.h): solves 2-SAT problem in O(#boolean variables + #clauses) with CNF based formulation.
+- [DSU on tree](https://github.com/CodeISM/ccptl/blob/master/Graph/dsu_on_tree.h): In O(NlogN) answer all queries of type: *How many vertices in the subtree of vertex v has some property?*.
 ### Math
 #### Number Theory
 - [Wheel Factorization](https://github.com/CodeISM/ccptl/blob/master/Number%20Theory/wheel_factorization.h): 25% faster than sqrt(n) trial division
 - [GCD (Greatest Common Divisor)](https://github.com/CodeISM/ccptl/blob/master/Number%20Theory/gcd.h): Iterative/Compile time constant
 - [Extended Euclid](https://github.com/CodeISM/ccptl/blob/master/Number%20Theory/extended_euclid.h): iterative version, much faster than recursive.
 - [Modular Exponentiation](https://github.com/CodeISM/ccptl/blob/master/Number%20Theory/modular_exponentiation.h): constexpr version.
+- [Fibonacci Number](https://github.com/CodeISM/ccptl/blob/master/Number%20Theory/fibonacci.h): Time: O(logN) but much faster (small constant) than matrix exponentiation version. Uses iterative table doubling method.
 #### Combinatorics
 - Combinations (nCr)
 #### Linear Algebra
@@ -34,6 +37,7 @@ Desired version of C++ standard can be enabled by passing `-std=c++14` to most o
 ### Dynamic Programming
 ### String Algorithms
 ### Misc
+- [Modular Arithmetic](https://github.com/CodeISM/ccptl/blob/master/Misc/modular.h): A convenient and efficient wrapper of plain `int` for modular arithmetic. Functionality provided: add, subtract, multiply, divide, exponentiation, inverse and IO.
 - [Ska Sort](https://github.com/CodeISM/ccptl/blob/master/Misc/ska_sort.h): A much faster (2x w.r.t. std::sort) sorting algorithm.
 - [All Permutations](https://github.com/CodeISM/ccptl/blob/master/Misc/all_permutations.h): Generate all permutations of a sequence (iterative) in some order (not lexicographic).
 
