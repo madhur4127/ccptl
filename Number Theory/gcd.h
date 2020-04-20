@@ -1,11 +1,8 @@
+// Binary GCD algorithm (supposed to be faster than Euclid's)
 template <typename T>
 constexpr T gcd(T u, T v) {
-    // boundary cases
     if (!u || !v)
         return u | v;
-#if __cpp_lib_gcd_lcm >= 201606L
-    return std::gcd(u, v);
-#endif
     unsigned shift = __builtin_ctz(u | v);
     u >>= __builtin_ctz(u);
     do {
