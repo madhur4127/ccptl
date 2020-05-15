@@ -49,6 +49,7 @@ struct matrix_base {
         scan(*this, *this, other, minus<T>());
         return *this;
     }
+
     constexpr matrix_base transpose() const {
         const int32_t BLOCKSIZE = 64 / sizeof(T);
         matrix_base ret(C, R);
@@ -59,6 +60,7 @@ struct matrix_base {
                         ret(l, k) = (*this)(k, l);
         return ret;
     }
+
     template <typename F> // F must be a callable type, used as universal/forwaring reference
     constexpr void scan(matrix_base &lhs, const matrix_base &op1, const matrix_base &op2, F &&f) const {
         for (int32_t i = 0; i < R; ++i)
@@ -116,6 +118,7 @@ struct matrix<Modular<MOD>> : matrix_base<Modular<MOD>> {
         }
         return ret;
     }
+
     constexpr matrix &operator*=(const matrix &o) {
         (*this) = (*this) * o;
         return *this;
@@ -123,6 +126,7 @@ struct matrix<Modular<MOD>> : matrix_base<Modular<MOD>> {
 };
 template <typename T>
 matrix<T> mexp(matrix<T> a, int64_t e) {
+    // assert(a.R == a.C);
     int32_t n = a.R;
     matrix<T> ret(n, n, 0);
     for (int32_t i = 0; i < n; ++i)
