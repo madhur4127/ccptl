@@ -5,123 +5,135 @@
  * Time Complexity: O(N^3) cache-efficient matrix multiplication
  * Notes: 1. Use Modular class from modular.h to take advantage of optimized modular arithmetic
  *        2. There are helper member functions like transpose, mexp (modular exponentiation)
- * Status: Tested: Modular exponentiation, Rest of the operations are pending
+ *        3. To access element from ith row and jth column use syntax: mat(i,j)
+ *        4. Initialize with R rows and C columns: matrix mat(R, C [, init]); 
+ *           Passing of init is optional, if provided all elements are initialized with init.
+ * Status: Tested: Modular exponentiation, Matrix multiplication
  */
 
 template <typename T>
-struct matrix_base : public vector<vector<T>> {
-    matrix_base(int r, int c, T init = 0) : vector<vector<T>>(r, vector<T>(c, init)), rows{r}, columns{c} {}
+struct matrix_base {
+    int32_t R, C;        // rows, columns
+    unique_ptr<T[]> mat; // holds the matrix, ptr allows move semantics
 
-    matrix_base constexpr operator+(const matrix_base &o) const {
-        matrix_base ret(rows, columns);
-        for (int i = 0; i < rows; ++i)
-            for (int j = 0; j < columns; ++j)
-                ret[i][j] = (*this)[i][j] + o[i][j];
+    // Implement the rule of five
+    matrix_base(int32_t rows, int32_t columns) : R{rows}, C{columns}, mat{make_unique<T[]>(R * C)} {}
+    matrix_base(int32_t rows, int32_t columns, const T init) : R{rows}, C{columns}, mat{make_unique<T[]>(R * C)} { fill(begin(), end(), init); }
+    matrix_base(const matrix_base &other) : R{other.R}, C{other.C}, mat{make_unique<T[]>(R * C)} { copy(other.begin(), other.end(), begin()); }
+    matrix_base(matrix_base &&other) = default;
+    matrix_base &operator=(const matrix_base &other) = default;
+    matrix_base &operator=(matrix_base &&other) = default;
+    ~matrix_base() = default;
+
+    constexpr T &operator()(int32_t i, int32_t j) { return mat[i * C + j]; }
+    constexpr T operator()(int32_t i, int32_t j) const { return mat[i * C + j]; }
+
+    auto begin() const { return mat.get(); }
+    auto end() const { return mat.get() + R * C; }
+
+    constexpr matrix_base operator+(const matrix_base &other) const {
+        matrix_base ret(R, C);
+        scan(ret, *this, other, plus<T>());
         return ret;
     }
-    matrix_base constexpr operator-(const matrix_base &o) const {
-        matrix_base ret(rows, columns);
-        for (int i = 0; i < rows; ++i)
-            for (int j = 0; j < columns; ++j)
-                ret[i][j] = (*this)[i][j] - o[i][j];
-        return ret;
-    }
-    matrix_base constexpr &operator+=(const matrix_base &o) {
-        for (int i = 0; i < rows; ++i)
-            for (int j = 0; j < columns; ++j)
-                (*this)[i][j] += o[i][j];
+    constexpr matrix_base &operator+=(const matrix_base &other) {
+        scan(*this, *this, other, plus<T>());
         return *this;
     }
-    matrix_base constexpr &operator-=(const matrix_base &o) {
-        for (int i = 0; i < rows; ++i)
-            for (int j = 0; j < columns; ++j)
-                (*this)[i][j] -= o[i][j];
+    constexpr matrix_base operator-(const matrix_base &other) const {
+        matrix_base ret(R, C);
+        scan(ret, *this, other, minus<T>());
+        return ret;
+    }
+    constexpr matrix_base &operator-=(const matrix_base &other) {
+        scan(*this, *this, other, minus<T>());
         return *this;
     }
-    matrix_base transpose() const {
-        const int BLOCKSIZE = 32;
-        matrix_base ret(columns, rows);
-        for (int i = 0; i < rows; i += BLOCKSIZE)
-            for (int j = 0; j < columns; j += BLOCKSIZE)
-                for (int k = i, lim_k = min(rows, i + BLOCKSIZE); k < lim_k; ++k)
-                    for (int l = j, lim_l = min(columns, j + BLOCKSIZE); l < lim_l; ++l)
-                        ret[l][k] = (*this)[k][l];
+
+    constexpr matrix_base transpose() const {
+        const int32_t BLOCKSIZE = 64 / sizeof(T);
+        matrix_base ret(C, R);
+        for (int32_t i = 0; i < R; i += BLOCKSIZE)
+            for (int32_t j = 0; j < C; j += BLOCKSIZE)
+                for (int32_t k = i, lim_k = min(R, i + BLOCKSIZE); k < lim_k; ++k)
+                    for (int32_t l = j, lim_l = min(C, j + BLOCKSIZE); l < lim_l; ++l)
+                        ret(l, k) = (*this)(k, l);
         return ret;
     }
 
-  public: // Data Members
-    int rows, columns;
+    template <typename F> // F must be a callable type, used as universal/forwaring reference
+    constexpr void scan(matrix_base &lhs, const matrix_base &op1, const matrix_base &op2, F &&f) const {
+        for (int32_t i = 0; i < R; ++i)
+            for (int32_t j = 0; j < C; ++j)
+                lhs(i, j) = f(op1(i, j), op2(i, j));
+    }
 };
 
 template <typename T>
 struct matrix : public matrix_base<T> {
     using base_type = matrix_base<T>;
+    matrix(const int32_t r, const int32_t c, T init = 0) : base_type(r, c, init) {}
+    matrix(base_type &&other) : base_type(other) {}
 
-    matrix(int r, int c, T init = 0) : base_type(r, c, init) {}
-
-    matrix const __attribute__((hot))
-    operator*(const matrix &o) const {
+    constexpr matrix operator*(const matrix &o) const {
         base_type tp = o.transpose();
-        int x = this->rows, y = this->columns, z = o.rows;
+        int32_t x = base_type::R, y = base_type::C, z = o.R;
         matrix ret(x, z);
-        for (int i = 0; i < x; ++i)
-            for (int j = 0; j < z; ++j)
-                for (int k = 0; k < y; ++k)
-                    ret[i][j] += (*this)[i][k] * tp[j][k];
-
+        for (int32_t i = 0; i < x; ++i)
+            for (int32_t j = 0; j < z; ++j)
+                for (int32_t k = 0; k < y; ++k)
+                    ret(i, j) += (*this)(i, k) * tp(j, k);
         return ret;
     }
 
-    matrix &operator*=(const matrix &o) {
+    constexpr matrix &operator*=(const matrix &o) {
         (*this) = (*this) * o;
         return *this;
     }
 };
 
-template <int MOD>
+template <int MOD> // template specialization
 struct matrix<Modular<MOD>> : matrix_base<Modular<MOD>> {
     using base_type = matrix_base<Modular<MOD>>;
+    matrix(int32_t r, int32_t c, Modular<MOD> init = 0) : base_type(r, c, init) {}
+    matrix(base_type &&other) : base_type(other) {}
 
-    matrix(int r, int c, Modular<MOD> init = 0) : base_type(r, c, init) {}
-
-    matrix constexpr __attribute__((hot))
-    operator*(const matrix &o) const {
+    constexpr matrix operator*(const matrix &o) const {
         // Don't change this if you don't know how this works
         base_type tp = o.transpose();
-        int x = this->rows, y = this->columns, z = o.rows;
+        int32_t x = base_type::R, y = base_type::C, z = o.R;
         matrix ret(x, z);
-        const int64_t base = mexp(Modular<MOD>(2), 64).value;
-        for (int i = 0; i < x; ++i) {
-            for (int j = 0; j < z; ++j) {
+        const uint64_t base = mexp(Modular<MOD>(2), 64).value;
+        for (int32_t i = 0; i < x; ++i) {
+            for (int32_t j = 0; j < z; ++j) {
                 uint64_t s = 0;
                 uint32_t carry = 0;
-                for (int k = 0; k < y; ++k) {
+                for (int32_t k = 0; k < y; ++k) {
                     auto cur = s;
-                    s += static_cast<uint64_t>((*this)[i][k].value) * static_cast<uint64_t>(tp[j][k].value);
+                    s += (*this)(i, k).value * static_cast<uint64_t>(tp(j, k).value);
                     carry += s < cur;
                 }
-                ret[i][j] = ((s % MOD) + base * carry) % MOD;
+                ret(i, j) = ((s % MOD) + base * carry) % MOD;
             }
         }
         return ret;
     }
 
-    matrix &operator*=(const matrix &o) {
+    constexpr matrix &operator*=(const matrix &o) {
         (*this) = (*this) * o;
         return *this;
     }
 };
 template <typename T>
-matrix<T> mexp(matrix<T> a, long long e) {
-    assert(a.rows == a.columns);
-    int n = a.rows;
+matrix<T> mexp(matrix<T> a, int64_t e) {
+    // assert(a.R == a.C);
+    int32_t n = a.R;
     matrix<T> ret(n, n, 0);
-    for (int i = 0; i < n; ++i)
-        ret[i][i] = 1;
+    for (int32_t i = 0; i < n; ++i)
+        ret(i, i) = 1;
     while (e) {
         if (e % 2) ret *= a;
-        a *= a;
-        e >>= 1;
+        a *= a, e >>= 1;
     }
     return ret;
 }
