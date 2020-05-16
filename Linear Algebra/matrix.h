@@ -12,26 +12,13 @@
  */
 
 template <typename T>
-struct matrix_base {
-    int32_t R, C;        // rows, columns
-    unique_ptr<T[]> mat; // holds the matrix, ptr allows move semantics
+struct matrix_base : public dynamic_matrix<T> {
+    using base_type = dynamic_matrix<T>;
+    using base_type::C;
+    using base_type::R;
 
-    // Implement the rule of five
-    matrix_base(int32_t rows, int32_t columns) : R{rows}, C{columns}, mat{make_unique<T[]>(R * C)} {}
-    matrix_base(int32_t rows, int32_t columns, const T init) : R{rows}, C{columns}, mat{make_unique<T[]>(R * C)} { fill(begin(), end(), init); }
-    matrix_base(const matrix_base &other) : R{other.R}, C{other.C}, mat{make_unique<T[]>(R * C)} { copy(other.begin(), other.end(), begin()); }
-    matrix_base(matrix_base &&other) = default;
-    matrix_base &operator=(const matrix_base &other) = default;
-    matrix_base &operator=(matrix_base &&other) = default;
-    ~matrix_base() = default;
-
-    constexpr T &operator()(int32_t i, int32_t j) { return mat[i * C + j]; }
-    constexpr T operator()(int32_t i, int32_t j) const { return mat[i * C + j]; }
-
-    auto begin() const { return mat.get(); }
-    auto end() const { return mat.get() + R * C; }
-
-    constexpr matrix_base operator+(const matrix_base &other) const {
+    constexpr matrix_base
+    operator+(const matrix_base &other) const {
         matrix_base ret(R, C);
         scan(ret, *this, other, plus<T>());
         return ret;
