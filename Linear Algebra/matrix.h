@@ -11,14 +11,19 @@
  * Status: Tested: Modular exponentiation, Matrix multiplication
  */
 
+#include "Data Structures/dynamic_matrix.h"
+
 template <typename T>
 struct matrix_base : public dynamic_matrix<T> {
     using base_type = dynamic_matrix<T>;
     using base_type::C;
     using base_type::R;
 
-    constexpr matrix_base
-    operator+(const matrix_base &other) const {
+    matrix_base(const int32_t r, const int32_t c) : base_type(r, c) {}
+    matrix_base(const int32_t r, const int32_t c, T init) : base_type(r, c, init) {}
+    matrix_base(base_type &&other) : base_type(other) {}
+
+    constexpr matrix_base operator+(const matrix_base &other) const {
         matrix_base ret(R, C);
         scan(ret, *this, other, plus<T>());
         return ret;
@@ -59,7 +64,8 @@ struct matrix_base : public dynamic_matrix<T> {
 template <typename T>
 struct matrix : public matrix_base<T> {
     using base_type = matrix_base<T>;
-    matrix(const int32_t r, const int32_t c, T init = 0) : base_type(r, c, init) {}
+    matrix(int32_t r, int32_t c) : base_type(r, c) {}
+    matrix(int32_t r, int32_t c, T init) : base_type(r, c, init) {}
     matrix(base_type &&other) : base_type(other) {}
 
     constexpr matrix operator*(const matrix &o) const {
@@ -82,7 +88,8 @@ struct matrix : public matrix_base<T> {
 template <int MOD> // template specialization
 struct matrix<Modular<MOD>> : matrix_base<Modular<MOD>> {
     using base_type = matrix_base<Modular<MOD>>;
-    matrix(int32_t r, int32_t c, Modular<MOD> init = 0) : base_type(r, c, init) {}
+    matrix(int32_t r, int32_t c) : base_type(r, c) {}
+    matrix(int32_t r, int32_t c, Modular<MOD> init) : base_type(r, c, init) {}
     matrix(base_type &&other) : base_type(other) {}
 
     constexpr matrix operator*(const matrix &o) const {
