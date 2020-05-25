@@ -12,122 +12,95 @@
  */
 
 #include "Data Structures/dynamic_matrix.h"
+template <typename T>
+using matrix = dynamic_matrix<T>;
 
 template <typename T>
-struct matrix_base : public dynamic_matrix<T> {
-    using base_type = dynamic_matrix<T>;
-    using base_type::C;
-    using base_type::R;
-
-    matrix_base(const int32_t r, const int32_t c) : base_type(r, c) {}
-    matrix_base(const int32_t r, const int32_t c, T init) : base_type(r, c, init) {}
-    matrix_base(base_type &&other) : base_type(other) {}
-
-    constexpr matrix_base operator+(const matrix_base &other) const {
-        matrix_base ret(R, C);
-        scan(ret, *this, other, plus<T>());
-        return ret;
-    }
-    constexpr matrix_base &operator+=(const matrix_base &other) {
-        scan(*this, *this, other, plus<T>());
-        return *this;
-    }
-    constexpr matrix_base operator-(const matrix_base &other) const {
-        matrix_base ret(R, C);
-        scan(ret, *this, other, minus<T>());
-        return ret;
-    }
-    constexpr matrix_base &operator-=(const matrix_base &other) {
-        scan(*this, *this, other, minus<T>());
-        return *this;
-    }
-
-    constexpr matrix_base transpose() const {
-        const int32_t BLOCKSIZE = 64 / sizeof(T);
-        matrix_base ret(C, R);
-        for (int32_t i = 0; i < R; i += BLOCKSIZE)
-            for (int32_t j = 0; j < C; j += BLOCKSIZE)
-                for (int32_t k = i, lim_k = min(R, i + BLOCKSIZE); k < lim_k; ++k)
-                    for (int32_t l = j, lim_l = min(C, j + BLOCKSIZE); l < lim_l; ++l)
-                        ret(l, k) = (*this)(k, l);
-        return ret;
-    }
-
-    template <typename F> // F must be a callable type, used as universal/forwaring reference
-    constexpr void scan(matrix_base &lhs, const matrix_base &op1, const matrix_base &op2, F &&f) const {
-        for (int32_t i = 0; i < R; ++i)
-            for (int32_t j = 0; j < C; ++j)
-                lhs(i, j) = f(op1(i, j), op2(i, j));
-    }
-};
-
+matrix<T> operator+(const matrix<T> &a, const matrix<T> &b) {
+    matrix<T> ret(a.R, a.C);
+    scan(ret, a, b, plus<T>());
+    return ret;
+}
 template <typename T>
-struct matrix : public matrix_base<T> {
-    using base_type = matrix_base<T>;
-    matrix(int32_t r, int32_t c) : base_type(r, c) {}
-    matrix(int32_t r, int32_t c, T init) : base_type(r, c, init) {}
-    matrix(base_type &&other) : base_type(other) {}
-
-    constexpr matrix operator*(const matrix &o) const {
-        base_type tp = o.transpose();
-        int32_t x = base_type::R, y = base_type::C, z = o.R;
-        matrix ret(x, z);
-        for (int32_t i = 0; i < x; ++i)
-            for (int32_t j = 0; j < z; ++j)
-                for (int32_t k = 0; k < y; ++k)
-                    ret(i, j) += (*this)(i, k) * tp(j, k);
-        return ret;
-    }
-
-    constexpr matrix &operator*=(const matrix &o) {
-        (*this) = (*this) * o;
-        return *this;
-    }
-};
-
-template <int MOD> // template specialization
-struct matrix<Modular<MOD>> : matrix_base<Modular<MOD>> {
-    using base_type = matrix_base<Modular<MOD>>;
-    matrix(int32_t r, int32_t c) : base_type(r, c) {}
-    matrix(int32_t r, int32_t c, Modular<MOD> init) : base_type(r, c, init) {}
-    matrix(base_type &&other) : base_type(other) {}
-
-    constexpr matrix operator*(const matrix &o) const {
-        // Don't change this if you don't know how this works
-        base_type tp = o.transpose();
-        int32_t x = base_type::R, y = base_type::C, z = o.R;
-        matrix ret(x, z);
-        const uint64_t base = mexp(Modular<MOD>(2), 64).value;
-        for (int32_t i = 0; i < x; ++i) {
-            for (int32_t j = 0; j < z; ++j) {
-                uint64_t s = 0;
-                uint32_t carry = 0;
-                for (int32_t k = 0; k < y; ++k) {
-                    auto cur = s;
-                    s += (*this)(i, k).value * static_cast<uint64_t>(tp(j, k).value);
-                    carry += s < cur;
-                }
-                ret(i, j) = ((s % MOD) + base * carry) % MOD;
+matrix<T> operator+=(const matrix<T> &a, const matrix<T> &b) {
+    scan(a, a, b, plus<T>());
+    return a;
+}
+template <typename T>
+matrix<T> operator-(const matrix<T> &a, const matrix<T> &b) {
+    matrix<T> ret(a.R, a.C);
+    scan(ret, a, b, minus<T>());
+    return ret;
+}
+template <typename T>
+matrix<T> operator-=(const matrix<T> &a, const matrix<T> &b) {
+    scan(a, a, b, minus<T>());
+    return a;
+}
+template <typename T>
+matrix<T> transpose(const matrix<T> &a) {
+    const int32_t BLOCKSIZE = 64 / sizeof(T);
+    matrix<T> ret(a.C, a.R);
+    for (int32_t i = 0; i < a.R; i += BLOCKSIZE)
+        for (int32_t j = 0; j < a.C; j += BLOCKSIZE)
+            for (int32_t k = i, lim_k = min(a.R, i + BLOCKSIZE); k < lim_k; ++k)
+                for (int32_t l = j, lim_l = min(a.C, j + BLOCKSIZE); l < lim_l; ++l)
+                    ret(l, k) = a(k, l);
+    return ret;
+}
+template <typename T, typename F> // F must be a callable type, used as universal/forwaring reference
+void scan(matrix<T> &lhs, const matrix<T> &op1, const matrix<T> &op2, F &&f) {
+    for (int32_t i = 0; i < lhs.R; ++i)
+        for (int32_t j = 0; j < lhs.C; ++j)
+            lhs(i, j) = f(op1(i, j), op2(i, j));
+}
+template <typename T>
+matrix<T> operator*(const matrix<T> &a, const matrix<T> &b) {
+    matrix<T> tp = transpose(b);
+    int32_t x = a.R, y = a.C, z = b.C;
+    matrix<T> ret(x, z);
+    for (int32_t i = 0; i < x; ++i)
+        for (int32_t j = 0; j < z; ++j)
+            for (int32_t k = 0; k < y; ++k)
+                ret(i, j) += a(i, k) * tp(j, k);
+    return ret;
+}
+template <int MOD>
+matrix<Modular<MOD>> operator*(const matrix<Modular<MOD>> &a, const matrix<Modular<MOD>> &b) {
+    // Don't change this if you don't know how this works
+    auto tp = transpose(b);
+    int32_t x = a.R, y = a.C, z = b.R;
+    matrix<Modular<MOD>> ret(x, z);
+    const uint64_t base = mexp(Modular<MOD>(2), 64).value;
+    for (int32_t i = 0; i < x; ++i) {
+        for (int32_t j = 0; j < z; ++j) {
+            uint64_t s = 0;
+            uint32_t carry = 0;
+            for (int32_t k = 0; k < y; ++k) {
+                auto cur = s;
+                s += a(i, k).value * static_cast<uint64_t>(tp(j, k).value);
+                carry += s < cur;
             }
+            ret(i, j) = ((s % MOD) + base * carry) % MOD;
         }
-        return ret;
     }
+    return ret;
+}
 
-    constexpr matrix &operator*=(const matrix &o) {
-        (*this) = (*this) * o;
-        return *this;
-    }
-};
+template <typename T>
+matrix<T> &operator*=(matrix<T> &a, const matrix<T> &b) { return a = a * b; }
+
 template <typename T>
 matrix<T> mexp(matrix<T> a, int64_t e) {
     // assert(a.R == a.C);
     int32_t n = a.R;
     matrix<T> ret(n, n, 0);
-    for (int32_t i = 0; i < n; ++i)
+    for (int i = 0; i < n; ++i)
         ret(i, i) = 1;
     while (e) {
         if (e % 2) ret *= a;
         a *= a, e >>= 1;
+        dprint(a);
     }
     return ret;
 }
