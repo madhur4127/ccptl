@@ -4,10 +4,11 @@
  * Features: Highly optimized for modular arithmetic and matrix multiplication, matrix exponentiation
  * Time Complexity: O(N^3) cache-efficient matrix multiplication
  * Notes: 1. Use Modular class from modular.h to take advantage of optimized modular arithmetic
- *        2. There are helper member functions like transpose, mexp (modular exponentiation)
+ *        2. There are helper functions like transpose, mexp (modular exponentiation)
  *        3. To access element from ith row and jth column use syntax: mat(i,j)
  *        4. Initialize with R rows and C columns: matrix mat(R, C [, init]); 
  *           Passing of init is optional, if provided all elements are initialized with init.
+ *        5. cout<<mat; prints the matrix in row-major form
  * Status: Tested: Modular exponentiation, Matrix multiplication
  */
 
@@ -22,7 +23,7 @@ matrix<T> operator+(const matrix<T> &a, const matrix<T> &b) {
     return ret;
 }
 template <typename T>
-matrix<T> operator+=(const matrix<T> &a, const matrix<T> &b) {
+matrix<T> operator+=(matrix<T> &a, const matrix<T> &b) {
     scan(a, a, b, plus<T>());
     return a;
 }
@@ -33,7 +34,7 @@ matrix<T> operator-(const matrix<T> &a, const matrix<T> &b) {
     return ret;
 }
 template <typename T>
-matrix<T> operator-=(const matrix<T> &a, const matrix<T> &b) {
+matrix<T> operator-=(matrix<T> &a, const matrix<T> &b) {
     scan(a, a, b, minus<T>());
     return a;
 }
@@ -65,9 +66,26 @@ matrix<T> operator*(const matrix<T> &a, const matrix<T> &b) {
                 ret(i, j) += a(i, k) * tp(j, k);
     return ret;
 }
+
+template <typename T>
+matrix<T> &operator*=(matrix<T> &a, const matrix<T> &b) { return a = a * b; }
+
+template <typename T>
+matrix<T> mexp(matrix<T> a, int64_t e) {
+    int32_t n = a.R; // assert(a.R == a.C);
+    matrix<T> ret(n, n, 0);
+    for (int i = 0; i < n; ++i)
+        ret(i, i) = 1;
+    while (e) {
+        if (e % 2) ret *= a;
+        a *= a, e >>= 1;
+    }
+    return ret;
+}
+// If you're not using matrix of "modular" int, this is not needed
+#include "Misc/modular.h"
 template <int MOD>
 matrix<Modular<MOD>> operator*(const matrix<Modular<MOD>> &a, const matrix<Modular<MOD>> &b) {
-    // Don't change this if you don't know how this works
     auto tp = transpose(b);
     int32_t x = a.R, y = a.C, z = b.R;
     matrix<Modular<MOD>> ret(x, z);
@@ -83,24 +101,6 @@ matrix<Modular<MOD>> operator*(const matrix<Modular<MOD>> &a, const matrix<Modul
             }
             ret(i, j) = ((s % MOD) + base * carry) % MOD;
         }
-    }
-    return ret;
-}
-
-template <typename T>
-matrix<T> &operator*=(matrix<T> &a, const matrix<T> &b) { return a = a * b; }
-
-template <typename T>
-matrix<T> mexp(matrix<T> a, int64_t e) {
-    // assert(a.R == a.C);
-    int32_t n = a.R;
-    matrix<T> ret(n, n, 0);
-    for (int i = 0; i < n; ++i)
-        ret(i, i) = 1;
-    while (e) {
-        if (e % 2) ret *= a;
-        a *= a, e >>= 1;
-        dprint(a);
     }
     return ret;
 }
