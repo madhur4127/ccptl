@@ -5,11 +5,9 @@ CodeISM Competitve Programming Template Library
 The aim of this repository is to provide copy-pastable code snippets. Focus is more on efficiency/performance as opposed to readability.
 
 ## Usage
-Code snippets in a file is meant to be self sufficient so no addtional requirements.
+Code snippets in a file are meant to be self sufficient.
 
-Note: A modern C++ compiler with support of `c++14` or later is required although most the files might work with lower versions too. 
-
-Desired version of C++ standard can be enabled by passing `-std=c++14` to most of the compilers.
+Note: A modern C++ compiler with support of `c++14` or later is required although most the files might work with lower versions too. Code is gauranteed to work with GCC/LLVM (Clang) toolchain but most of the code is portable across compilers and architectures.
 
 ## Directory
 ### Data Structures
@@ -40,6 +38,7 @@ Desired version of C++ standard can be enabled by passing `-std=c++14` to most o
 - [Modular Arithmetic](https://github.com/CodeISM/ccptl/blob/master/Misc/modular.h): A convenient and efficient wrapper of plain `int` for modular arithmetic. Functionality provided: add, subtract, multiply, divide, exponentiation, inverse and IO.
 - [Ska Sort](https://github.com/CodeISM/ccptl/blob/master/Misc/ska_sort.h): A much faster (2x w.r.t. std::sort) sorting algorithm.
 - [All Permutations](https://github.com/CodeISM/ccptl/blob/master/Misc/all_permutations.h): Generate all permutations of a sequence (iterative) in some order (not lexicographic).
+- [N-D vector](https://github.com/CodeISM/ccptl/blob/master/Misc/nd_vector.h): A less cumbersome declarator of next N-Dimensional `std::vector`.
 
 ## Contribution
 Feel free to open an issue or fire a pull request!
@@ -47,8 +46,6 @@ Feel free to open an issue or fire a pull request!
 ## TODO
 - Update this readme with new (updated) content
 - Test the implementation for bugs
-
-## License
 
 ## Authorship
 Many of the implementations are common in folklore of competitive programming and the authour is unknown. Whenever possible author of the code is added. Kindly contact us in case of any issues.
