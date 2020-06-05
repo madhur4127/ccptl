@@ -27,8 +27,6 @@ Note: A modern C++ compiler with support of `c++14` or later is required althoug
 - [Extended Euclid](https://github.com/CodeISM/ccptl/blob/master/Number%20Theory/extended_euclid.h): iterative version, much faster than recursive.
 - [Modular Exponentiation](https://github.com/CodeISM/ccptl/blob/master/Number%20Theory/modular_exponentiation.h): constexpr version.
 - [Fibonacci Number](https://github.com/CodeISM/ccptl/blob/master/Number%20Theory/fibonacci.h): Time: O(logN) but much faster (small constant) than matrix exponentiation version. Uses iterative table doubling method.
-#### Combinatorics
-- Combinations (nCr)
 #### Linear Algebra
 - [Matrix](https://github.com/CodeISM/ccptl/blob/master/Linear%20Algebra/matrix.h): highly optimized: multiplication, exponentiation, transpose including versions with modular arithmetic.
 
@@ -39,9 +37,6 @@ Note: A modern C++ compiler with support of `c++14` or later is required althoug
 - [Ska Sort](https://github.com/CodeISM/ccptl/blob/master/Misc/ska_sort.h): A much faster (2x w.r.t. std::sort) sorting algorithm.
 - [All Permutations](https://github.com/CodeISM/ccptl/blob/master/Misc/all_permutations.h): Generate all permutations of a sequence (iterative) in some order (not lexicographic).
 - [N-D vector](https://github.com/CodeISM/ccptl/blob/master/Misc/nd_vector.h): A less cumbersome declarator of next N-Dimensional `std::vector`.
-
-## Contribution
-Feel free to open an issue or fire a pull request!
 
 ## TODO
 - Update this readme with new (updated) content
