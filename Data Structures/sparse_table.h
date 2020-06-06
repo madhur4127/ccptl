@@ -15,40 +15,36 @@
 *       SparseTable<int, compare_min> st(vec);  // constructs sparse table from vec (vector<int>)
 *       st.query(left, right);       // Query range: [left,right] in O(logN)
 *       st.query_fast(left, right);  // Query range: [left,right] in O(1)
+*       st(i,j); // to access element at ith row (out of logN rows) and jth column (out of N columns)
 * Status: Tested
 */
-
 template <typename T>
 struct compare_min {
-    const T constexpr operator()(const T &a, const T &b) const {
-        return min(a, b);
+    constexpr T operator()(const T &a, const T &b) const {
+        return a < b ? a : b;
     }
 };
-template <typename T, class F = plus<T>>
+template <typename T, class F = compare_min<T>>
 class sparse_table {
   public:
-    sparse_table(const vector<T> &v) {
-        int N = v.size();
-        for (int s = 1; s < N; s <<= 1)
-            K++;
-        st.assign(K, vector<T>(N));
-        copy(begin(v), end(v), begin(st[0]));
+    sparse_table(const vector<T> &v) : N{(int32_t)v.size()}, K{31 - __builtin_clz(N)}, table(K + 1, N) {
+        copy(begin(v), end(v), table.begin());
         for (int j = 1; j <= K; ++j)
             for (int i = 0; i + (1 << j) <= N; ++i)
-                st[j][i] = _op(st[j - 1][i], st[j - 1][i + (1 << (j - 1))]);
+                table(j, i) = _op(table(j - 1, i), table(j - 1, i + (1 << (j - 1))));
     }
 
     T query_fast(int l, int r) { // 0-based interval: [l,r]
         int dep = 31 - __builtin_clz(r - l + 1);
-        return _op(st[dep][l], st[dep][r - (1 << dep) + 1]);
+        return _op(table(dep, l), table(dep, r - (1 << dep) + 1));
     }
 
     // O(log N)/query
     T query(int l, int r) { // 0-based interval: [l,r]
-        T ans = st[0][l++];
+        T ans = table(0, l++);
         for (int j = K; j >= 0; j--) {
             if ((1 << j) <= r - l + 1) {
-                ans = op(ans, st[j][l]);
+                ans = _op(ans, table(j, l));
                 l += 1 << j;
             }
         }
@@ -56,7 +52,7 @@ class sparse_table {
     }
 
   private:
-    vector<vector<T>> st;
-    int K = 1; // K = ceil(log(N))
-    const F _op = F();
+    int32_t N, K; // K = ceil(log(N))
+    dynamic_matrix<T> table;
+    F _op = F();
 };
