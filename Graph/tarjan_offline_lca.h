@@ -14,7 +14,8 @@ struct query {
 };
 vector<int32_t> tarjan_lca(const vector<vector<int32_t>> &adj,
                            const vector<vector<query>> queries, // for {u,v} do: queries[u].push_back({v, index}), queries[v].push_back({u,index});
-                           int nq) {                            // nq is number of queries
+                           int nq,                              // nq is number of queries
+                           int root = 0) {
     int n = adj.size();
     vector<int32_t> ret(nq), par(n);
     DSU d(n);
@@ -30,6 +31,6 @@ vector<int32_t> tarjan_lca(const vector<vector<int32_t>> &adj,
             if (vis[qu.v]) ret[qu.index] = par[d.find(qu.v)];
         }
     };
-    dfs(0, -1); // ASSUMES 0 AS THE ROOT OF THE TREE
+    dfs(root, -1);
     return ret;
 }
