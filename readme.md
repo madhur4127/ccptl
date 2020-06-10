@@ -20,6 +20,8 @@ Note: A modern C++ compiler with support of `c++14` or later is required althoug
 ### Graph
 - [2-SAT](https://github.com/CodeISM/ccptl/blob/master/Graph/2SAT.h): solves 2-SAT problem in O(#boolean variables + #clauses) with CNF based formulation.
 - [DSU on tree](https://github.com/CodeISM/ccptl/blob/master/Graph/dsu_on_tree.h): In O(NlogN) answer all queries of type: *How many vertices in the subtree of vertex v has some property?*.
+#### LCA
+- [Tarjan's Offline LCA](https://github.com/CodeISM/ccptl/blob/master/Graph/tarjan_offline_lca.h): Most optimal algorithm for solving LCA. O(DFS + Q).
 ### Math
 #### Number Theory
 - [Wheel Factorization](https://github.com/CodeISM/ccptl/blob/master/Number%20Theory/wheel_factorization.h): 25% faster than sqrt(n) trial division
